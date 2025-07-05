@@ -11,13 +11,95 @@ datasource db {
 
 
 model Event {
-  id          String   @id @default(cuid())
+  id          Int   @id @default(autoincrement())
   name        String
   date        DateTime
   isInvitationSent Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
+  sessions Session[]
   @@map("events")
 }
+
+model Session {
+
+  id Int @id @default(autoincrement())
+  name String
+  date DateTime
+  time String
+  mode String
+  location String 
+  eventId Int
+  sessionJudges JudgeSession[]
+  presenters Presenter[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id])
+  
+
+  @@map("session")
+
+}
+
+model Judge{
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  passwordId String @unique 
+  category String 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions JudgeSession[]
+
+
+ 
+
+  @@map("judges")
+}
+
+
+model JudgeSession {
+  id Int @id @default(autoincrement())
+  judgeId Int
+  sessionId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  judge Judge @relation(fields: [judgeId], references: [id])
+  session Session @relation(fields: [sessionId], references: [id])
+
+  @@map("judge_session")
+}
+
+model Members{
+
+  id Int @id @default(autoincrement())
+  name String
+  email String @unique
+  phone String
+  isLeader Boolean @default(false)
+  memberId String @unique
+  presenterId Int
+  presenter Presenter @relation(fields: [presenterId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("members")
+}
+
+model Presenter {
+  id Int @id @default(autoincrement())
+  type String
+  groupName String ? @unique
+  marks Int @default(0)
+  sessionId Int
+  members Members[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  session Session @relation(fields: [sessionId], references: [id])
+  @@map("presenters")
+}
+
 

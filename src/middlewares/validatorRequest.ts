@@ -8,7 +8,7 @@ export const ValidateRequest = (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({ error: errors.array() });
+    res.status(400).json({ error: errors.array()});
   }
 
   next();

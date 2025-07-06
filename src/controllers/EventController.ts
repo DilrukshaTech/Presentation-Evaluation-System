@@ -35,7 +35,7 @@ export const GetAllEvents = async (
   }
 };
 
-export const getEventById = async (req:Request,res:Response) => {
+export const getEventById = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id, 10);
 
@@ -48,3 +48,25 @@ export const getEventById = async (req:Request,res:Response) => {
     throw new Error("Internal server error");
   }
 };
+
+export const updateEventById = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+
+    const event = await prisma.event.update({
+      where: { id },
+      data: {
+        name: req.body.name ? req.body.name : undefined,
+        date: req.body.date ? new Date(req.body.date) : undefined,
+      },
+    });
+    res.status(200).json({
+      message: "Event updated successfully",
+      event,
+    });
+  } catch (error) {
+    console.error("Error updating event by ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+

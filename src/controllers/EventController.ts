@@ -6,11 +6,9 @@ const prisma = new PrismaClient();
 
 export const AddEvent = async (req: express.Request, res: express.Response) => {
   try {
+   
     const newEvent = await prisma.event.create({
-      data: {
-        name: req.body.name,
-        date: new Date(req.body.date),
-      },
+      data: req.body
     });
     res.status(201).json({
       message: "Event added successfully",
@@ -70,3 +68,16 @@ export const updateEventById = async (req: Request, res: Response) => {
   }
 };
 
+export const deleteEventById = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+
+    await prisma.event.delete({
+      where: { id },
+    });
+    res.status(200).json({ message: "Event deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting event by ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

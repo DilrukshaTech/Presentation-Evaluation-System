@@ -7,7 +7,17 @@ export const eventCreateValidatorRules = [
     .notEmpty()
     .withMessage("Name is required")
     .isString()
-    .withMessage("Event name must be a string"),
+    .withMessage("Event name must be a string")
+    .custom(async (value) => {
+      const existingEvent = await prisma.event.findFirst({
+        where: { name: value },
+      });
+      if (existingEvent) {
+        throw new Error("Event with this name already exists");
+      }
+      return true;
+    }),
+
 
   body("date")
     .notEmpty()

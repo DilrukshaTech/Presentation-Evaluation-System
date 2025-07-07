@@ -24,12 +24,12 @@ model Event  {
 model Session {
 
   id Int @id @default(autoincrement())
-  name String
-  date DateTime
+  name String @unique
+  date DateTime @default(now())
   time String
   mode String
   location String 
-  eventId Int
+  eventId Int @map("event_id")
   sessionJudges JudgeSession[]
   presenters Presenter[]
   createdAt DateTime @default(now())

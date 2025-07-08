@@ -46,6 +46,7 @@ model Judge{
   id Int @id @default(autoincrement())
   name String
   email String @unique
+  phone String
   passwordId String @unique 
   category String 
   createdAt DateTime @default(now())

@@ -111,3 +111,28 @@ export const updateSessionJudgeById = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const deleteSessionJudgeById = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+
+    await prisma.judgeSession.delete({
+      where: { id },
+    });
+
+    res.status(200).json({ message: "Session judge deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting session judge by ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const deleteAllSessionJudges = async (req: Request, res: Response) => {
+  try {
+    await prisma.judgeSession.deleteMany({});
+    res.status(200).json({ message: "All session judges deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting all session judges:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

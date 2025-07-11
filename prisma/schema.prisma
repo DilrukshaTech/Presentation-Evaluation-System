@@ -75,14 +75,14 @@ model JudgeSession {
 
 model Members{
 
-  id Int @id @default(autoincrement())
+  id          Int   @id @default(autoincrement())
   name String
   email String @unique
   phone String
   isLeader Boolean @default(false)
   memberId String @unique
-  presenterId Int
-  presenter Presenter @relation(fields: [presenterId], references: [id])
+  presenter  Presenter[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -95,11 +95,14 @@ model Presenter {
   groupName String ? @unique
   marks Int @default(0)
   sessionId Int
-  members Members[]
+  memberId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   session Session @relation(fields: [sessionId], references: [id])
+  member Members @relation(fields: [memberId], references: [id])
+
+
   @@map("presenters")
 }
 

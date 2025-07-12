@@ -23,7 +23,7 @@ export const presenterCreationValidatorRules = [
     .withMessage("Session ID must be an integer")
     .custom(async (value) => {
       const session = await prisma.session.findUnique({
-        where: { id: value },
+        where: { id: parseInt(value) },
       });
       if (!session) {
         throw new Error("Session ID does not exist");

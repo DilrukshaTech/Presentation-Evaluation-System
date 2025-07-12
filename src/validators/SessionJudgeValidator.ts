@@ -11,7 +11,7 @@ body().isArray({min:1}).withMessage("Request body must be an array of session ju
     .withMessage("Judge ID must be an integer")
     .custom(async (value) => {
       const judge = await prisma.judge.findUnique({
-        where: { id: value },
+        where: { id:parseInt( value) },
       });
       if (!judge) {
         throw new Error("Judge not found");
@@ -26,7 +26,7 @@ body().isArray({min:1}).withMessage("Request body must be an array of session ju
     .withMessage("Session ID must be an integer")
     .custom(async (value) => {
       const session = await prisma.session.findUnique({
-        where: { id: value },
+        where: { id: parseInt(value) },
       });
       if (!session) {
         throw new Error("Session not found");

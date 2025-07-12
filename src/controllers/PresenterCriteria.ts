@@ -69,7 +69,7 @@ export const getAllPresenterCriteria = async (req: Request, res: Response) => {
 export const updatePresenterCriteriaById = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { name, marks } = req.body;
+    const { name, marks } = req.body ? req.body : undefined;
 
     const updatedCriteria = await prisma.presenterCriteria.update({
       where: { id },
@@ -88,3 +88,27 @@ export const updatePresenterCriteriaById = async (req: Request, res: Response) =
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const deletePresenterCriteriaById = async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    await prisma.presenterCriteria.delete({
+      where: { id },
+    });
+
+    res.status(200).json({ message: "Presenter criteria deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting presenter criteria by ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const deleteAllPresenterCriteria = async (req: Request, res: Response) => {
+  try {
+    await prisma.presenterCriteria.deleteMany({});
+    res.status(200).json({ message: "All presenter criteria deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting all presenter criteria:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

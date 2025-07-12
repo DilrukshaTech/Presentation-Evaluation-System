@@ -6,7 +6,7 @@ export const presenterCreationValidatorRules = [
   body("type")
     .notEmpty()
     .withMessage("Type is required")
-    .isIn(["individual", "group"])
+    .isIn(["Individual", "Group"])
     .withMessage("Type must be either 'individual' or 'group'"),
 
   body("groupName")
@@ -15,10 +15,7 @@ export const presenterCreationValidatorRules = [
     .withMessage("Group name must be a string")
     .isLength({ min: 1 })
     .withMessage("Group name must not be empty"),
-  body("marks")
-    .optional()
-    .isInt({ min: 0 })
-    .withMessage("Marks must be a non-negative integer"),
+  
   body("sessionId")
     .notEmpty()
     .withMessage("Session ID is required")
@@ -33,20 +30,14 @@ export const presenterCreationValidatorRules = [
       }
       return true;
     }),
-  body("memberId")
-    .notEmpty()
-    .withMessage("Member ID is required")
-    .isInt()
-    .withMessage("Member ID must be an integer")
-    .custom(async (value) => {
-      const member = await prisma.members.findUnique({
-        where: { id: value },
-      });
-      if (!member) {
-        throw new Error("Member ID does not exist");
-      }
-      return true;
-    }),
+  body("members")
+   .isArray()
+   .withMessage("Members must be an array")
+   .custom((members) => {
+     if (members.length === 0) {
+       throw new Error("At least one member is required");
+     }
+    })
 ];
 
 
@@ -56,14 +47,6 @@ export const presenterIdValidationRules = [
     .withMessage("Presenter ID is required")
     .isInt()
     .withMessage("Presenter ID must be an integer")
-    .custom(async (value) => {
-      const presenter = await prisma.presenter.findUnique({
-        where: { id: value },
-      });
-      if (!presenter) {
-        throw new Error("Presenter ID does not exist");
-      }
-      return true;
-    }),
+   
 
 ];

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 // Generate a random member ID
 const generateRandomMemberId = generator.generate({
-  length: 5,
+  length: 6,
   numbers: true,
   symbols: false,
   uppercase: true,
@@ -39,7 +39,11 @@ export const createMember = async (req: Request, res: Response) => {
 
 export const getAllMembers = async (req: Request, res: Response) => {
   try {
-    const members = await prisma.members.findMany();
+    const members = await prisma.members.findMany({
+      include: {
+        presenters: true, 
+      },
+    });
     res.status(200).json(members);
   } catch (error) {
     console.error("Error fetching members:", error);
@@ -53,6 +57,9 @@ export const getMemberById = async (req: Request, res: Response) => {
 
     const member = await prisma.members.findUnique({
       where: { id },
+      include: {
+        presenters: true, 
+      },
     });
 
     res.status(200).json(member);

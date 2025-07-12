@@ -1,25 +1,24 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "events" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "isInvitationSent" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
-  - The primary key for the `events` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - The `id` column on the `events` table would be dropped and recreated. This will lead to data loss if there is data in the column.
-
-*/
--- AlterTable
-ALTER TABLE "events" DROP CONSTRAINT "events_pkey",
-DROP COLUMN "id",
-ADD COLUMN     "id" SERIAL NOT NULL,
-ADD CONSTRAINT "events_pkey" PRIMARY KEY ("id");
+    CONSTRAINT "events_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "session" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "date" TIMESTAMP(3) NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "time" TEXT NOT NULL,
     "mode" TEXT NOT NULL,
     "location" TEXT NOT NULL,
-    "eventId" INTEGER NOT NULL,
+    "event_id" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -32,6 +31,7 @@ CREATE TABLE "judges" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
+    "passwordId" TEXT NOT NULL,
     "category" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -58,7 +58,6 @@ CREATE TABLE "members" (
     "phone" TEXT NOT NULL,
     "isLeader" BOOLEAN NOT NULL DEFAULT false,
     "memberId" TEXT NOT NULL,
-    "presenterId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -78,8 +77,25 @@ CREATE TABLE "presenters" (
     CONSTRAINT "presenters_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "_PresenterMembers" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+
+    CONSTRAINT "_PresenterMembers_AB_pkey" PRIMARY KEY ("A","B")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "events_name_key" ON "events"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "session_name_key" ON "session"("name");
+
 -- CreateIndex
 CREATE UNIQUE INDEX "judges_email_key" ON "judges"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "judges_passwordId_key" ON "judges"("passwordId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "members_email_key" ON "members"("email");
@@ -90,8 +106,11 @@ CREATE UNIQUE INDEX "members_memberId_key" ON "members"("memberId");
 -- CreateIndex
 CREATE UNIQUE INDEX "presenters_groupName_key" ON "presenters"("groupName");
 
+-- CreateIndex
+CREATE INDEX "_PresenterMembers_B_index" ON "_PresenterMembers"("B");
+
 -- AddForeignKey
-ALTER TABLE "session" ADD CONSTRAINT "session_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "session" ADD CONSTRAINT "session_event_id_fkey" FOREIGN KEY ("event_id") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "judge_session" ADD CONSTRAINT "judge_session_judgeId_fkey" FOREIGN KEY ("judgeId") REFERENCES "judges"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -100,7 +119,10 @@ ALTER TABLE "judge_session" ADD CONSTRAINT "judge_session_judgeId_fkey" FOREIGN 
 ALTER TABLE "judge_session" ADD CONSTRAINT "judge_session_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "session"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "members" ADD CONSTRAINT "members_presenterId_fkey" FOREIGN KEY ("presenterId") REFERENCES "presenters"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "presenters" ADD CONSTRAINT "presenters_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "session"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "presenters" ADD CONSTRAINT "presenters_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "session"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "_PresenterMembers" ADD CONSTRAINT "_PresenterMembers_A_fkey" FOREIGN KEY ("A") REFERENCES "members"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PresenterMembers" ADD CONSTRAINT "_PresenterMembers_B_fkey" FOREIGN KEY ("B") REFERENCES "presenters"("id") ON DELETE CASCADE ON UPDATE CASCADE;

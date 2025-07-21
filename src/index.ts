@@ -8,6 +8,7 @@ import { memberRoute } from "./routes/memberRoutes";
 import { presenterRoute } from "./routes/presenterRoutes";
 import { criteriaRoutes } from "./routes/criteriaRoutes";
 import {qrRoutes} from "./routes/qrRoutes";
+import { EspRouter } from "./routes/espActivityRoutes";
 
 const cors = require("cors");
 
@@ -23,6 +24,8 @@ app.use("/members", memberRoute);
 app.use("/presenters", presenterRoute);
 app.use("/criteria", criteriaRoutes);
 app.use("/generate-qr", qrRoutes);
+app.use("/esp", EspRouter);
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });

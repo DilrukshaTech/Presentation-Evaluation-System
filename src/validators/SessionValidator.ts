@@ -31,7 +31,7 @@ export const sessionCreateValidatorRules = [
   body("mode")
     .notEmpty()
     .withMessage("Mode is required")
-    .isIn(["online", "physical"]),
+    .isIn(["online", "offline"]),
 
   body("location").notEmpty().withMessage("Location is required"),
   body("eventId")

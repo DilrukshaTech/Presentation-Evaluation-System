@@ -11,11 +11,11 @@ import { criteriaCreateValidatorRules,criteriaIdValidatorRules } from "../valida
 import {ValidateRequest} from "../middlewares/validatorRequest";
 
 const router = express.Router();
-router.post("/", criteriaCreateValidatorRules, ValidateRequest,createPresenterCriteria);
-router.get("/:id",criteriaIdValidatorRules,ValidateRequest, getPresenterCriteriaById);
+router.post("/", createPresenterCriteria);
+router.get("/:id", getPresenterCriteriaById);
 router.get("/", getAllPresenterCriteria);
-router.patch("/:id",criteriaIdValidatorRules,ValidateRequest, updatePresenterCriteriaById);
+router.patch("/:id", updatePresenterCriteriaById);
 router.delete("/", deleteAllPresenterCriteria);
-router.delete("/:id",criteriaIdValidatorRules,ValidateRequest,deletePresenterCriteriaById);
+router.delete("/:id",deletePresenterCriteriaById);
 
 export const criteriaRoutes = router;

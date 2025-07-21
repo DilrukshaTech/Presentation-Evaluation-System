@@ -38,7 +38,7 @@ export const getPresenterById = async (req: Request, res: Response) => {
       where: { id },
       include: {
         members: true,
-        criteriaList: true, 
+      
       },
     });
     res.status(200).json(presenter);
@@ -53,7 +53,7 @@ export const getAllPresenters = async (req: Request, res: Response) => {
     const presenters = await prisma.presenter.findMany({
       include: {
         members: true,
-        criteriaList: true,
+       
       },
       orderBy: {
         createdAt: "desc",

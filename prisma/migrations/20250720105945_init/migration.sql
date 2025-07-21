@@ -3,6 +3,7 @@ CREATE TABLE "events" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'upcoming',
     "isInvitationSent" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -58,6 +59,7 @@ CREATE TABLE "members" (
     "phone" TEXT NOT NULL,
     "isLeader" BOOLEAN NOT NULL DEFAULT false,
     "memberId" TEXT NOT NULL,
+    "marks" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -69,12 +71,23 @@ CREATE TABLE "presenters" (
     "id" SERIAL NOT NULL,
     "type" TEXT NOT NULL,
     "groupName" TEXT,
-    "marks" INTEGER NOT NULL DEFAULT 0,
     "sessionId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "presenters_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "presenter_criteria" (
+    "id" SERIAL NOT NULL,
+    "eventId" INTEGER NOT NULL,
+    "name" TEXT NOT NULL,
+    "marks" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "presenter_criteria_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -120,6 +133,9 @@ ALTER TABLE "judge_session" ADD CONSTRAINT "judge_session_sessionId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "presenters" ADD CONSTRAINT "presenters_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "session"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "presenter_criteria" ADD CONSTRAINT "presenter_criteria_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "events"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PresenterMembers" ADD CONSTRAINT "_PresenterMembers_A_fkey" FOREIGN KEY ("A") REFERENCES "members"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -48,6 +48,7 @@ export const getAllSessionJudges = async (req: Request, res: Response) => {
       include: {
         judge: true,
         session: true,
+        
       },
         omit: {
             judgeId: true,
@@ -136,3 +137,23 @@ export const deleteAllSessionJudges = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+const filterJudgesBySession= async (req: Request, res: Response) => {
+  try {
+
+
+    const sessionId = parseInt(req.params.sessionId, 10);
+    const judges = await prisma.judgeSession.findMany({
+      where: { sessionId },
+      include: {
+        judge: true,
+      },
+    });
+
+    res.status(200).json(judges);
+  } catch (error) {
+    console.error("Error filtering judges by session:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

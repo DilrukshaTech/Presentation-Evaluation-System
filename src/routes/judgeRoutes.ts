@@ -15,7 +15,7 @@ import { ValidateRequest } from "../middlewares/validatorRequest";
 
 const router = express.Router();
 
-router.post("/", judgeCreateValidatorRules, ValidateRequest, createJudge);
+router.post("/", createJudge);
 router.get("/", getAllJudges);
 router.get("/:id", judgeIdValidationRules, ValidateRequest, getJudgeById);
 router.patch("/:id", judgeIdValidationRules, ValidateRequest, updateJudgeById);

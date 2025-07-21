@@ -4,7 +4,11 @@ import generator from "generate-password";
 
 const prisma = new PrismaClient();
 
-// Generate a random member ID
+
+
+export const createMember = async (req: Request, res: Response) => {
+  try {
+    // Generate a random member ID
 const generateRandomMemberId = generator.generate({
   length: 6,
   numbers: true,
@@ -13,9 +17,6 @@ const generateRandomMemberId = generator.generate({
   lowercase:false,
   excludeSimilarCharacters: true,
 });
-
-export const createMember = async (req: Request, res: Response) => {
-  try {
     const { name, email, phone, isLeader } = req.body;
 
     const newMember = await prisma.members.create({
@@ -72,7 +73,7 @@ export const getMemberById = async (req: Request, res: Response) => {
 export const updateMemberById = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { name, email, phone, isLeader } = req.body;
+    const { name, email, phone, marks,isLeader } = req.body;
 
     const member = await prisma.members.update({
       where: { id },
@@ -80,6 +81,7 @@ export const updateMemberById = async (req: Request, res: Response) => {
         name: name ? name : undefined,
         email: email ? email : undefined,
         phone: phone ? phone : undefined,
+        marks: marks ? marks : undefined,
         isLeader: isLeader? isLeader : undefined,
       },
     });

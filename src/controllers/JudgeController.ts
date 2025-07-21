@@ -5,18 +5,21 @@ import generator from "generate-password";
 
 const prisma = new PrismaClient();
 
-// generate a random password
-const generateRandomPassword = generator.generate({
-  length: 10,
-  numbers: true,
-  symbols: true,
-  uppercase: true,
-  lowercase: true,
-  excludeSimilarCharacters: true,
-});
-
 export const createJudge = async (req: Request, res: Response) => {
   try {
+
+    
+// generate a random password
+    const generateRandomPassword = generator.generate({
+      length: 6,
+      numbers: true,
+      symbols: true,
+      uppercase: true,
+      lowercase: true,
+      strict: true,
+      excludeSimilarCharacters: true,
+    });
+
     const newJudge = await prisma.judge.create({
       data: {
         name: req.body.name,
@@ -29,6 +32,7 @@ export const createJudge = async (req: Request, res: Response) => {
         sessions: true,
       },
     });
+
     res.status(201).json({
       message: "Judge created successfully",
       judge: newJudge,
@@ -39,11 +43,13 @@ export const createJudge = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getAllJudges = async (req: Request, res: Response) => {
   try {
     const judges = await prisma.judge.findMany({
       include: {
         sessions: true,
+       
       },
     });
     res.status(200).json(judges);

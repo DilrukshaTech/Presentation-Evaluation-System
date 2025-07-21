@@ -14,10 +14,12 @@ model Event  {
   id          Int   @id @default(autoincrement())
   name        String @unique
   date        DateTime
+  status      String @default("upcoming")
   isInvitationSent Boolean @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   sessions Session[]
+  criteriaList PresenterCriteria[]
   @@map("events") 
 }
 
@@ -81,6 +83,7 @@ model Members{
   phone String
   isLeader Boolean @default(false)
   memberId String @unique
+  marks Int @default(0)
   presenters Presenter[] @relation("PresenterMembers") // many-to-many relationship with Presenter
 
   createdAt DateTime @default(now())
@@ -91,11 +94,11 @@ model Members{
 
 model Presenter {
   id Int @id @default(autoincrement())
-  type String
+  type String 
   groupName String ? @unique
   sessionId Int
   members Members[] @relation("PresenterMembers") // many-to-many relationship with Members
-  criteriaList PresenterCriteria[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -107,13 +110,13 @@ model Presenter {
 
 model PresenterCriteria {
   id Int @id @default(autoincrement())
-  presenterId Int
-  name String @unique
+  eventId Int
+  name String 
   marks Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  presenter Presenter @relation(fields: [presenterId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
 
   @@map("presenter_criteria")
 }

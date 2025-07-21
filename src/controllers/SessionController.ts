@@ -50,7 +50,11 @@ export const getSessionById = async (req: Request, res: Response) => {
       where: { id },
       include: {
         event: true,
-        sessionJudges: true,
+        sessionJudges:{
+          include: {
+            judge: true,
+          },
+        },
         presenters: true,
       },
     });
@@ -106,3 +110,23 @@ export const deleteAllSessions = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+export const filterSessionsByEventId = async (req: Request, res: Response) => {
+  try {
+    const eventId = parseInt(req.query.id as string, 10);
+    const sessions = await prisma.session.findMany({
+      where: { eventId },
+      include: {
+        event: true,
+        sessionJudges: true,
+        presenters: true,
+      },
+    });
+
+    res.status(200).json(sessions);
+  } catch (error) {
+    console.error("Error filtering sessions by event ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}

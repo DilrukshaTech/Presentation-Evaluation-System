@@ -5,7 +5,7 @@ import { ValidateRequest } from '../middlewares/validatorRequest';
 import { sessionJudgesValidatorRules,sessionJudgeIdValidationRules } from '../validators/SessionJudgeValidator';
 const router=express.Router();
 
-router.post('/', sessionJudgesValidatorRules, ValidateRequest, createJudgeSession);
+router.post('/', createJudgeSession);
 router.get('/', getAllSessionJudges);
 router.get('/:id',sessionJudgeIdValidationRules,ValidateRequest, getSessionJudgeById);
 router.delete('/:id', sessionJudgeIdValidationRules, ValidateRequest, deleteSessionJudgeById );

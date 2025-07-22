@@ -10,7 +10,7 @@ router.post("/", eventCreateValidatorRules,ValidateRequest, AddEvent)
 router.get("/",GetAllEvents)
 router.get("/:id", getEventById );
 router.patch("/:id",eventIdValidatorRules,ValidateRequest, updateEventById);
-router.delete("/:id",eventIdValidatorRules,ValidateRequest, deleteEventById);
+router.delete("/:id", deleteEventById);
 router.delete("/",deleteAllEvents )
 
 router.get(

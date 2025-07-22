@@ -1,25 +1,32 @@
-
 import express from "express";
-import {eventRoute} from "./routes/eventRoutes";
-import {sessionRoute } from "./routes/sessionRoutes";
+import { eventRoute } from "./routes/eventRoutes";
+import { sessionRoute } from "./routes/sessionRoutes";
 import { judgeRoute } from "./routes/judgeRoutes";
 import { judgeSessionRoute } from "./routes/judgeSessionRoute";
 import { memberRoute } from "./routes/memberRoutes";
 import { presenterRoute } from "./routes/presenterRoutes";
 import { criteriaRoutes } from "./routes/criteriaRoutes";
-import {qrRoutes} from "./routes/qrRoutes";
+import { qrRoutes } from "./routes/qrRoutes";
 import { EspRouter } from "./routes/espActivityRoutes";
 
-const cors = require("cors");
+import cors from "cors";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 app.use(express.json());
-app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'] }))
-  
+
 app.use("/events", eventRoute);
 app.use("/sessions", sessionRoute);
 app.use("/judges", judgeRoute);
-app.use("/sessionjudges",judgeSessionRoute);
+app.use("/sessionjudges", judgeSessionRoute);
 app.use("/members", memberRoute);
 app.use("/presenters", presenterRoute);
 app.use("/criteria", criteriaRoutes);

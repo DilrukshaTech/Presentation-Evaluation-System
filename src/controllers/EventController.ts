@@ -114,6 +114,29 @@ export const deleteEventById = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id, 10);
 
+    const event = await prisma.event.findUnique({
+      where: { id },
+      include: {
+        sessions: {
+          include: {
+            presenters: true,
+            sessionJudges: true,
+          },
+        },
+      },
+    });
+
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    if (event.sessions.length > 0) {
+      return res.status(400).json({
+        error: "Cannot delete event with existing sessions",
+      });
+    }
+
+
     await prisma.event.delete({
       where: { id },
     });
